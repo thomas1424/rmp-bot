@@ -4,13 +4,20 @@
   "version": "0.1.0",
   "description": "Shows RateMyProfessor info directly inside your school registration portal.",
   "permissions": ["storage"],
-  "host_permissions": ["<all_urls>"],
+  "host_permissions": [
+    "https://www.ratemyprofessors.com/*"
+  ],
   "background": {
     "service_worker": "src/background.js"
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
+      "matches": [
+        "https://*.ellucian.com/*",
+        "https://*.chaffey.edu/*",
+        "https://*.valleycollege.edu/*"
+      ],
+      "css": ["src/styles.css"],
       "js": ["src/content.js"],
       "run_at": "document_idle"
     }
