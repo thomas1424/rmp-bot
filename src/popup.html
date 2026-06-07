@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            width: 260px;
+            padding: 16px;
+            margin: 0;
+            text-align: center;
+            background-color: #ffffff;
+            color: #334155;
+        }
+        h1 { font-size: 20px; margin: 0 0 8px 0; color: #0f172a; }
+        p { font-size: 14px; margin: 0 0 16px 0; color: #64748b; }
+        
+        /* Base box style */
+        .status-box {
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        /* Colors for Active state */
+        .active {
+            background-color: #f0fdf4;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        /* Colors for Inactive state */
+        .inactive {
+            background-color: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🎓 RMP-Bot</h1>
+    <p>Your class registration superpower.</p>
+    
+    <div id="status" class="status-box inactive">
+        Checking status...
+    </div>
+
+    <script src="popup.js"></script>
+
+</body>
+</html>
