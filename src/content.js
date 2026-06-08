@@ -1,21 +1,25 @@
-console.log("RMP-Bot content script loaded and searching for professors...");
+// Check Chrome storage before doing anything
+chrome.storage.local.get(["rmpEnabled"], (res) => {
+    // If the user explicitly disabled the extension, stop execution
+    if (res.rmpEnabled === false) {
+        console.log("RMP-Bot is currently disabled by the user.");
+        return; 
+    }
 
-// 1. Find where the professor names are. 
-// (We will adjust '.instructor-name' later once we look at the actual portal code)
-const professorElements = document.querySelectorAll('.instructor-name'); 
+    // Otherwise, proceed with injecting ratings
+    console.log("RMP-Bot content script loaded and searching for professors...");
 
-professorElements.forEach((element) => {
-    let profName = element.innerText;
+    const professorElements = document.querySelectorAll('.instructor-name'); 
 
-    // 2. Ask the background script for data
-    chrome.runtime.sendMessage({ action: "getRating", name: profName }, (response) => {
-        
-        // 3. Build the visual badge
-        let badge = document.createElement('span');
-        badge.className = "rmp-badge";
-        badge.innerText = ` ⭐️ ${response.rating}`;
-        
-        // 4. Attach the badge to the page
-        element.appendChild(badge);
+    professorElements.forEach((element) => {
+        let profName = element.innerText;
+
+        chrome.runtime.sendMessage({ action: "getRating", name: profName }, (response) => {
+            let badge = document.createElement('span');
+            badge.className = "rmp-badge";
+            badge.innerText = ` ⭐️ ${response.rating}`;
+            
+            element.appendChild(badge);
+        });
     });
 });
