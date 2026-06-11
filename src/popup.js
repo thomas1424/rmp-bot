@@ -6,16 +6,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     let toggleLabel = document.getElementById("toggleLabel");
 
     // 1. Check if the page is a registration portal (DOM Detection)
+    // 1. Check if the page is a registration portal (DOM Detection)
     chrome.scripting.executeScript({
         target: { tabId: tab.id },
-        func: () => document.querySelectorAll('.instructor-name').length > 0
+        func: () => document.querySelectorAll('span[id^="faculty-office-hours-"]').length > 0
     }, (results) => {
+// ... keep the rest of your popup.js exactly the same!
         if (results && results[0] && results[0].result === true) {
             statusDiv.innerText = "✅ Active on this page";
             statusDiv.className = "status-box active"; 
         } else {
             statusDiv.innerText = "❌ Inactive on this page";
-            statusDiv.className = "status-box inactive"; 
+            statusDiv.className = "status-box inactive";
         }
     });
 
@@ -40,4 +42,5 @@ document.addEventListener("DOMContentLoaded", async () => {
         // Reload the current tab so the changes take effect immediately
         chrome.tabs.reload(tab.id);
     });
-});
+})
+
