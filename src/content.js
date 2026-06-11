@@ -1,21 +1,27 @@
-// This tells the script to find any span whose ID starts with "faculty-office-hours-"
 const TARGET_SELECTOR = 'span[id^="faculty-office-hours-"]'; 
 
 function injectRatings() {
     chrome.storage.local.get(["rmpEnabled"], (res) => {
         if (res.rmpEnabled === false) return; 
 
-        // Find all professors that we HAVEN'T processed yet
         const professorElements = document.querySelectorAll(`${TARGET_SELECTOR}:not(.rmp-processed)`); 
 
         professorElements.forEach((element) => {
-            // Mark this element so we don't inject 50 badges if the page reloads
             element.classList.add('rmp-processed');
 
-            let profName = element.innerText.trim();
-            if (!profName || profName.toLowerCase() === "staff" || profName === "TBA") return;
+            let rawName = element.innerText.trim();
+            if (!rawName || rawName.toLowerCase() === "staff" || rawName === "tba") return;
 
-            chrome.runtime.sendMessage({ action: "getRating", name: profName }, (response) => {
+            // Name Parser: Converts "Zuick, Nhan H." to "Nhan Zuick"
+            let searchName = rawName;
+            if (rawName.includes(",")) {
+                let parts = rawName.split(",");
+                let lastName = parts[0].trim();
+                let firstPart = parts[1].trim().split(" ")[0]; 
+                searchName = `${firstPart} ${lastName}`;
+            }
+
+            chrome.runtime.sendMessage({ action: "getRating", name: searchName }, (response) => {
                 let badge = document.createElement('a'); 
                 badge.className = "rmp-badge";
                 
@@ -39,6 +45,5 @@ function injectRatings() {
     });
 }
 
-// Run the function immediately, and then every 2 seconds to catch late-loading elements
 injectRatings();
 setInterval(injectRatings, 2000);

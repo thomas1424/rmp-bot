@@ -1,40 +1,38 @@
-# 🎓 RMP-Bot 
+# RMP-Bot
 
-**RMP-Bot** is a lightweight, powerful Chrome Extension that brings RateMyProfessor (RMP) ratings directly to your college's class registration portal. 
+A lightweight, local-first Chrome Extension that pulls RateMyProfessor scores and injects them directly into Ellucian college registration portals. Built for the Hack Club Stardance project.
 
-Say goodbye to the endless cycle of copying a professor's name, opening a new tab, searching RMP, and clicking through results. When you browse for classes on Ellucian, RMP-Bot automatically fetches and injects the professor's rating right next to their name. 
+Choosing classes is usually a massive headache. You have to copy a professor's name, open a new tab, search them on RateMyProfessor, read the rating, and tab back. Multiply that by 15 different class options, and it takes hours. 
 
-Right now, the extension will only be developed for Ellucian but support for more platforms liek Workday Student will be coming soon!
+I built RMP-Bot to completely automate that loop. It scrapes the DOM of your college portal, talks to the RMP GraphQL API in the background, parses the data, and injects a color-coded, clickable rating badge right next to the professor's name.
 
-## ✨ Features
+## Features
 
-* **Instant Inline Ratings:** Automatically displays the professor's overall score, difficulty rating, and "Would Take Again" percentage directly on the course search page.
-* **Color-Coded Indicators:** Quickly scan your options with visual cues.
-  * 🟢 **Green:** Excellent (4.0 - 5.0)
-  * 🟡 **Yellow:** Average (3.0 - 3.9)
-  * 🔴 **Red:** Proceed with caution (< 3.0)
-* **Hover Previews (Quick Look):** Hover over the injected rating badge to see the professor's top tags (e.g., "Caring", "Tough Grader") and a snippet of their most recent review without ever leaving the page.
-* **Direct Links:** Click the rating badge to instantly open the professor's full RMP profile in a new tab if you want to dive deeper into the reviews.
-* **Smart Caching:** Uses `chrome.storage.local` to remember previously fetched professors. This prevents unnecessary API calls, ensures lightning-fast load times on page refresh, and respects rate limits.
-* **Seamless UI Integration:** Injected elements are styled to match the native registration system, making it look like a built-in feature rather than a clunky add-on.
+* **Live GraphQL API Integration:** Fetches real, up-to-date data directly from RateMyProfessor's database.
+* **Smart Name Parsing:** College portals usually list names as "Last, First" (e.g., "Doe, John C."). The extension automatically intercepts, cleans, and flips the string to "John Doe" before querying the API so it actually gets a hit.
+* **Aggressive Local Caching:** To prevent hitting rate limits, RMP-Bot uses `chrome.storage.local`. Once a professor's rating is pulled, it's saved. If you refresh the page, the badges load instantly from memory instead of pinging the server again.
+* **Dynamic DOM Injection:** Uses a MutationObserver loop to handle dynamically loaded content.
+* **Visual Triage:** Badges are color-coded (Green for 4.0+, Yellow for 3.0+, Red for avoid) to let you scan a page of 20 classes in seconds.
 
-## 🛠️ How It Works
+## How to Install & Test
 
-RMP-Bot utilizes a **Content Script** that listens for changes on the class search page. It uses regex and DOM manipulation to identify professor names, queries the RateMyProfessor GraphQL API in the background, and dynamically injects custom HTML/CSS badges next to the text nodes.
+Because this isn't on the Chrome Web Store yet, you'll need to load it manually via Developer Mode.
 
-## 🚀 Installation (Developer Mode)
+1. Download this repository as a ZIP file and extract it.
+2. Open Chrome and go to `chrome://extensions/`.
+3. Toggle on **Developer mode** in the top right corner.
+4. Click **Load unpacked** and select the folder you just extracted.
 
-Since this extension is currently in development, you can install it directly from the source files using Chrome's Developer Mode:
+### Testing Instructions (Important!)
+To see the extension work, you need to be on an Ellucian-based college registration portal. 
 
-1. **Download the project:** Click the green **Code** button at the top of this GitHub repository and select **Download ZIP**.
-2. **Extract the files:** Locate the downloaded ZIP file on your computer and extract/unzip it into a new folder.
-3. **Open Chrome Extensions:** Open Google Chrome and type `chrome://extensions/` into your address bar, then hit Enter.
-4. **Enable Developer Mode:** Turn on the **Developer mode** toggle switch located in the top right corner of the page.
-5. **Load the extension:** Click the **Load unpacked** button that appears in the top left.
-6. **Select the folder:** Navigate to and select the `rmp-bot` folder you extracted in Step 2. 
-7. **Try it out!** Navigate to your college's class registration portal and start searching for classes to see the ratings appear.
+1. Go to the course search page and search for any subject.
+2. **Note on Ellucian Portals:** Ellucian hides the professor's name inside a dropdown menu by default. **The extension will only show "Active" and inject the ratings AFTER you click the dropdown to reveal the instructor's name.** 3. Once the professor's name is visible on the screen, wait 1-2 seconds. RMP-Bot will detect the change in the DOM and inject the badge.
+4. Click the badge to be taken straight to their full RMP review page.
+5. Click the extension puzzle piece icon to open the custom Dark Mode popup UI. You can use the master switch to instantly kill the extension if you need to turn it off.
 
-## 📁 Extension Structure
-
-This repo is already laid out as a barebones Manifest V3 Chrome extension.
-
+## Tech Stack
+* **Manifest V3** for modern Chrome Extension architecture.
+* Vanilla JavaScript, HTML, and CSS. No heavy frameworks, no bloating.
+* `chrome.storage` API for the caching layer.
+* `chrome.scripting` API for secure DOM manipulation.
